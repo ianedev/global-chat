@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../api';
-import { UserPlus } from 'lucide-react';
+
+// Remix Icon CDN should be in your index.html
+const ACCENT_BLUE = '#0052FF';
 
 const Register = () => {
   const [username, setUsername] = useState('');
@@ -17,65 +19,87 @@ const Register = () => {
       await api.post('/auth/register', { username, password });
       navigate('/login');
     } catch (err) {
-      setError('Username already exists');
+      setError('Identity already claimed');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#f5f5f7] p-4 font-sans">
-      <div className="w-full max-w-[400px] rounded-[24px] bg-white p-10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] sm:p-12">
-        <div className="mb-10 text-center">
-          <div className="mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
-            <UserPlus className="h-7 w-7" />
+    <div className="flex min-h-screen items-center justify-center bg-[#fafafa] p-6 font-sans antialiased text-[#121212]">
+      <div className="w-full max-w-[340px] rounded-xl border border-slate-200 bg-white p-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+        
+        {/* Header Section */}
+        <div className="mb-10">
+          <div className="inline-flex mb-6 h-10 w-10 items-center justify-center rounded-lg bg-slate-900 text-white shadow-lg shadow-slate-900/20">
+            <i className="ri-user-add-line text-xl"></i>
           </div>
-          <h1 className="text-[28px] font-semibold tracking-tight text-[#1d1d1f]">Create Account</h1>
-          <p className="mt-3 text-[15px] text-[#86868b]">Join the global map chat.</p>
+          <h1 className="text-[18px] font-black tracking-tight text-slate-900 uppercase">
+            Initialize
+          </h1>
+          <p className="mt-1 text-[11px] font-bold uppercase tracking-widest text-slate-400">
+            Create MapChat Node
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded-xl bg-red-50 p-4 text-[14px] text-red-600">
+            <div className="rounded-lg border border-red-100 bg-red-50/50 px-3 py-2 text-[12px] font-medium text-red-600 animate-in fade-in slide-in-from-top-1">
+              <i className="ri-error-warning-line mr-2"></i>
               {error}
             </div>
           )}
           
-          <div className="space-y-4">
-            <input
-              type="text"
-              className="w-full rounded-xl border border-[#d2d2d7] bg-white px-4 py-3.5 text-[15px] text-[#1d1d1f] placeholder:text-[#86868b] focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all"
-              placeholder="Pick a username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
+          <div className="space-y-3">
+            <div className="space-y-1">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">New Identity</label>
+              <div className="group relative flex items-center">
+                <i className="ri-at-line absolute left-3.5 text-slate-300 transition-colors group-focus-within:text-blue-600"></i>
+                <input
+                  type="text"
+                  className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-[13px] transition-all focus:border-blue-500 focus:bg-white focus:outline-none"
+                  placeholder="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
 
-            <input
-              type="password"
-              className="w-full rounded-xl border border-[#d2d2d7] bg-white px-4 py-3.5 text-[15px] text-[#1d1d1f] placeholder:text-[#86868b] focus:border-emerald-500 focus:outline-none focus:ring-4 focus:ring-emerald-500/10 transition-all"
-              placeholder="Create a password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="space-y-1">
+              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Access Key</label>
+              <div className="group relative flex items-center">
+                <i className="ri-shield-keyhole-line absolute left-3.5 text-slate-300 transition-colors group-focus-within:text-blue-600"></i>
+                <input
+                  type="password"
+                  className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-[13px] transition-all focus:border-blue-500 focus:bg-white focus:outline-none"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="mt-6 w-full rounded-full bg-[#10b981] py-3.5 text-[15px] font-medium text-white hover:bg-[#059669] active:bg-[#047857] transition-colors disabled:opacity-70"
+            style={{ backgroundColor: ACCENT_BLUE }}
+            className="mt-4 w-full rounded-lg py-3 text-[12px] font-black uppercase tracking-widest text-white transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-blue-600/10"
           >
-            {isLoading ? 'Creating...' : 'Create Account'}
+            {isLoading ? 'Processing...' : 'Register Node'}
           </button>
         </form>
 
-        <p className="mt-8 text-center text-[14px] text-[#86868b]">
-          Already have an account?{' '}
-          <Link to="/login" className="font-medium text-[#10b981] hover:underline">
-            Sign in.
-          </Link>
-        </p>
+        <div className="mt-10 border-t border-slate-100 pt-6 text-center">
+          <p className="text-[12px] text-slate-400 font-medium">
+            Already registered?{' '}
+            <Link to="/login" className="font-bold text-slate-900 transition-colors hover:text-blue-600">
+              Sign In.
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

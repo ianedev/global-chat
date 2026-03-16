@@ -24,7 +24,7 @@ const Login = ({ setUser }) => {
       setUser({ id: data.userId, username: data.username });
       navigate('/');
     } catch (err) {
-      setError('Invalid credentials');
+      setError('Invalid Access Credentials');
     } finally {
       setIsLoading(false);
     }
@@ -32,24 +32,25 @@ const Login = ({ setUser }) => {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#fafafa] p-6 font-sans antialiased text-[#121212]">
+      {/* Container: 340px fits the Golden Ratio silhouette for centered auth cards */}
       <div className="w-full max-w-[340px] rounded-xl border border-slate-200 bg-white p-8 shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
         
         {/* Header Section */}
-        <div className="mb-10">
+        <div className="mb-10 text-left">
           <div className="inline-flex mb-6 h-10 w-10 items-center justify-center rounded-lg bg-slate-900 text-white shadow-lg shadow-slate-900/20">
-            <i className="ri-login-box-line text-xl"></i>
+            <i className="ri-shield-user-line text-xl"></i>
           </div>
           <h1 className="text-[18px] font-black tracking-tight text-slate-900 uppercase">
-            Sign In
+            Authentication
           </h1>
           <p className="mt-1 text-[11px] font-bold uppercase tracking-widest text-slate-400">
-            MapChat Protocol
+            Secure Protocol Access
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
-            <div className="rounded-lg border border-red-100 bg-red-50/50 px-3 py-2 text-[12px] font-medium text-red-600">
+            <div className="rounded-lg border border-red-100 bg-red-50/50 px-3 py-2 text-[12px] font-medium text-red-600 animate-in fade-in slide-in-from-top-1">
               <i className="ri-error-warning-line mr-2"></i>
               {error}
             </div>
@@ -91,7 +92,7 @@ const Login = ({ setUser }) => {
             type="submit"
             disabled={isLoading}
             style={{ backgroundColor: ACCENT_BLUE }}
-            className="mt-4 w-full rounded-lg py-3 text-[12px] font-black uppercase tracking-widest text-white transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50"
+            className="mt-4 w-full rounded-lg py-3 text-[12px] font-black uppercase tracking-widest text-white transition-all hover:brightness-110 active:scale-[0.98] disabled:opacity-50 shadow-lg shadow-blue-600/10"
           >
             {isLoading ? 'Verifying...' : 'Authorize'}
           </button>
@@ -99,7 +100,7 @@ const Login = ({ setUser }) => {
 
         <div className="mt-10 border-t border-slate-100 pt-6 text-center">
           <p className="text-[12px] text-slate-400 font-medium">
-            No account yet?{' '}
+            No node detected?{' '}
             <Link to="/register" className="font-bold text-slate-900 transition-colors hover:text-blue-600">
               Register.
             </Link>

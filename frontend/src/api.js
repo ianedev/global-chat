@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3000/api',
+  baseURL: 'https://global.up.railway.app/api',
+  // baseURL: 'http://localhost:3000/api',
 });
 
 api.interceptors.request.use((config) => {

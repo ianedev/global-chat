@@ -11,9 +11,6 @@ function App() {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
-    } else {
-      // Default Guest User
-      setUser({ id: 999, username: 'Guest' });
     }
   }, []);
 
@@ -28,9 +25,12 @@ function App() {
   return (
     <div className="h-screen w-full bg-slate-900 text-white">
       <Routes>
-        <Route path="/" element={<MapDashboard user={user || { id: 999, username: 'Guest' }} onLogout={handleLogout} />} />
-        <Route path="/login" element={<Navigate to="/" />} />
-        <Route path="/register" element={<Navigate to="/" />} />
+        <Route 
+          path="/" 
+          element={user ? <MapDashboard user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
+        />
+        <Route path="/login" element={<Login setUser={setUser} />} />
+        <Route path="/register" element={<Register />} />
       </Routes>
     </div>
   );

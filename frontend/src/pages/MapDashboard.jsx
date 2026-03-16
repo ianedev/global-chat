@@ -83,7 +83,7 @@ const MapDashboard = ({ user, onLogout }) => {
   const socketRef = useRef(null);
 
   useEffect(() => {
-    const socketUrl = import.meta.env.VITE_WS_URL || 'http://localhost:3000';
+    const socketUrl = import.meta.env.VITE_WS_URL || 'https://global.up.railway.app';
     socketRef.current = io(socketUrl);
     
     socketRef.current.on('new_message', (msg) => {

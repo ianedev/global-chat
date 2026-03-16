@@ -101,6 +101,7 @@ server.listen(PORT, '0.0.0.0', async () => {
   🚀 Server initialized!
   📡 Listening on port: ${PORT}
   🔗 Mode: ${process.env.NODE_ENV || 'development'}
+  🛢️  DB Check: ${process.env.DATABASE_URL ? '✅ DATABASE_URL set' : '❌ DATABASE_URL missing'}
   `);
   
   try {

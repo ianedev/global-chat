@@ -79,16 +79,51 @@ const MapDashboard = ({ user, onLogout }) => {
   const [rooms, setRooms] = useState([]);
   const [activeRoom, setActiveRoom] = useState(null);
   const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
   const socketRef = useRef(null);
 
   useEffect(() => {
-    // socketRef.current = io('http://localhost:3000');
-    socketRef.current = io('https://global.up.railway.app');
-    socketRef.current.on('new_message', (msg) => setMessages((p) => [...p, msg]));
+    const socketUrl = import.meta.env.VITE_WS_URL || 'http://localhost:3000';
+    socketRef.current = io(socketUrl);
+    
+    socketRef.current.on('new_message', (msg) => {
+      setMessages((p) => [...p, msg]);
+    });
+
     api.get('/rooms').then(({ data }) => setRooms(data));
-    navigator.geolocation.getCurrentPosition((pos) => setPosition([pos.coords.latitude, pos.coords.longitude]));
+    navigator.geolocation.getCurrentPosition((pos) => {
+      setPosition([pos.coords.latitude, pos.coords.longitude]);
+    });
+
     return () => socketRef.current?.disconnect();
   }, []);
+
+  // Handle room joining
+  useEffect(() => {
+    if (activeRoom && socketRef.current) {
+      setMessages([]); // Clear messages when switching rooms
+      socketRef.current.emit('join_room', activeRoom.id);
+      
+      // Fetch history
+      api.get(`/rooms/${activeRoom.id}/messages`).then(({ data }) => {
+        setMessages(data);
+      });
+    }
+  }, [activeRoom]);
+
+  const sendMessage = (e) => {
+    e.preventDefault();
+    if (!input.trim() || !activeRoom) return;
+
+    const messageData = {
+      room_id: activeRoom.id,
+      sender_id: user.id,
+      content: input,
+    };
+
+    socketRef.current.emit('send_message', messageData);
+    setInput('');
+  };
 
   return (
     <div className="relative h-screen w-screen bg-[#fafafa] overflow-hidden font-sans text-slate-900 antialiased">
@@ -143,19 +178,27 @@ const MapDashboard = ({ user, onLogout }) => {
           <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-hide">
             {messages.map((msg, i) => (
               <div key={i} className={`flex flex-col ${msg.sender_id === user.id ? 'items-end' : 'items-start'}`}>
-                <div className={`px-3 py-2 rounded-xl text-[13px] shadow-sm ${
-                  msg.sender_id === user.id ? 'bg-slate-900 text-white' : 'bg-white border border-slate-100'
-                }`}>
-                  {msg.content}
+                <div className="flex flex-col gap-0.5 max-w-[85%]">
+                  <span className="text-[9px] font-bold text-slate-400 px-1">{msg.sender?.username || 'System'}</span>
+                  <div className={`px-3 py-2 rounded-xl text-[13px] shadow-sm ${
+                    msg.sender_id === user.id ? 'bg-slate-900 text-white' : 'bg-white border border-slate-100'
+                  }`}>
+                    {msg.content}
+                  </div>
                 </div>
               </div>
             ))}
           </div>
 
-          <form className="p-3 bg-slate-50/50 border-t border-slate-100">
+          <form onSubmit={sendMessage} className="p-3 bg-slate-50/50 border-t border-slate-100">
             <div className="flex items-center gap-2 bg-white border border-slate-200 rounded-xl px-3 py-1 shadow-inner">
-              <input className="flex-1 bg-transparent border-none text-[13px] py-2 focus:outline-none" placeholder="Transmit..." />
-              <button className="text-blue-600"><i className="ri-send-plane-2-fill text-lg"></i></button>
+              <input 
+                className="flex-1 bg-transparent border-none text-[13px] py-2 focus:outline-none" 
+                placeholder="Transmit..." 
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+              />
+              <button type="submit" className="text-blue-600"><i className="ri-send-plane-2-fill text-lg"></i></button>
             </div>
           </form>
         </div>

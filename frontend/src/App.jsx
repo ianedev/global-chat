@@ -11,6 +11,9 @@ function App() {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       setUser(JSON.parse(savedUser));
+    } else {
+      // Default Guest User
+      setUser({ id: 999, username: 'Guest' });
     }
   }, []);
 
@@ -18,17 +21,16 @@ function App() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
+    // Re-set guest on logout for this "no-login" mode
+    setUser({ id: 999, username: 'Guest' });
   };
 
   return (
     <div className="h-screen w-full bg-slate-900 text-white">
       <Routes>
-        <Route path="/login" element={!user ? <Login setUser={setUser} /> : <Navigate to="/" />} />
-        <Route path="/register" element={!user ? <Register /> : <Navigate to="/" />} />
-        <Route 
-          path="/" 
-          element={user ? <MapDashboard user={user} onLogout={handleLogout} /> : <Navigate to="/login" />} 
-        />
+        <Route path="/" element={<MapDashboard user={user || { id: 999, username: 'Guest' }} onLogout={handleLogout} />} />
+        <Route path="/login" element={<Navigate to="/" />} />
+        <Route path="/register" element={<Navigate to="/" />} />
       </Routes>
     </div>
   );

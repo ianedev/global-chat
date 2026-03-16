@@ -24,7 +24,7 @@ const Login = ({ setUser }) => {
       setUser({ id: data.userId, username: data.username });
       navigate('/');
     } catch (err) {
-      setError('Invalid Access Credentials');
+      setError(err.response?.data?.error || 'Authentication failed');
     } finally {
       setIsLoading(false);
     }

@@ -19,7 +19,7 @@ const Register = () => {
       await api.post('/auth/register', { username, password });
       navigate('/login');
     } catch (err) {
-      setError('Identity already claimed');
+      setError(err.response?.data?.error || 'Registration failed');
     } finally {
       setIsLoading(false);
     }

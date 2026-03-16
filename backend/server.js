@@ -3,16 +3,7 @@ const http = require('http');
 const { Server } = require('socket.io');
 const cors = require('cors');
 require('dotenv').config();
-const { PrismaClient } = require('@prisma/client');
-const COUNTRIES = require('./countries');
-
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: '*', methods: ['GET', 'POST'] }
-});
-
-const prisma = new PrismaClient();
+const prisma = require('./prismaClient');
 
 app.use(cors());
 app.use(express.json());
